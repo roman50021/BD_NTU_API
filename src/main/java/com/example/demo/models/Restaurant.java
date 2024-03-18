@@ -1,10 +1,12 @@
 package com.example.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,12 +24,14 @@ public class Restaurant {
     private String name;
     private String description;
     @OneToMany(mappedBy = "restaurant")
+    @JsonIgnore
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<RestaurantAddress> addresses;
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menus;
-    private String phone_number;
-    private LocalDateTime open_time;
-    private LocalDateTime close_time;
+    private String phoneNumber;
+    private LocalDateTime openTime;
+    private LocalDateTime closeTime;
     private String website;
 
 }
