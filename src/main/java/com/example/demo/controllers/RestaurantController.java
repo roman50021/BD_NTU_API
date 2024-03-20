@@ -42,8 +42,4 @@ public class RestaurantController {
         return service.deleteRestaurant(request);
     }
 
-    @PostMapping("/address")
-    public ResponseEntity<MessageInfo> addNewAddressRestaurant(@RequestBody AddNewAddressRestaurantDto request){
-        return service.addNewAddress(request);
-    }
 }
