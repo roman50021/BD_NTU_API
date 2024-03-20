@@ -14,4 +14,6 @@ public interface DishRepository extends JpaRepository<Dish, Integer> {
     Optional<Dish> findById(Integer integer);
 
     List<Dish> findByMenu(Menu menu);
+
+    List<Dish> findByMenuId(Long menuId);
 }
