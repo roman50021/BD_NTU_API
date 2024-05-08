@@ -16,7 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "restaurant")
+@Table(name = "restaurant", indexes = {
+        @Index(name = "idx_name", columnList = "name"),
+        @Index(name = "idx_open_time", columnList = "openTime"),
+        @Index(name = "idx_close_time", columnList = "closeTime"),
+        @Index(name = "idx_website", columnList = "website")
+})
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,11 +32,10 @@ public class Restaurant {
     @JsonIgnore
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<RestaurantAddress> addresses;
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     private List<Menu> menus;
     private String phoneNumber;
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
     private String website;
-
 }

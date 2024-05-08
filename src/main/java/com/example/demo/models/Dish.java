@@ -23,6 +23,5 @@ public class Dish {
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
-    @JsonIgnore
     private Menu menu;
 }

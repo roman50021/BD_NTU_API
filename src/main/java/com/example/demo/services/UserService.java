@@ -12,6 +12,7 @@ import com.example.demo.models.UserAddress;
 import com.example.demo.repositories.UserAddressRepository;
 import com.example.demo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -106,16 +107,13 @@ public class UserService  {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(UserWithAddressDto.builder().message(errorMessage).build());
         }
     }
-
+    @Cacheable("usersCache")
     public ResponseEntity<List<User>> getUsers() {
         try {
-            // Получаем всех пользователей из базы данных
-            List<User> users = userRepository.findAll();
 
-            // Возвращаем список пользователей
+            List<User> users = userRepository.findAll();
             return ResponseEntity.ok(users);
         } catch (Exception e) {
-            // Обработка исключений
             String errorMessage = "Error when getting users: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

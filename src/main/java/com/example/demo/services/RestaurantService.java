@@ -8,6 +8,7 @@ import com.example.demo.models.*;
 import com.example.demo.repositories.RestaurantAddressRepository;
 import com.example.demo.repositories.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,10 +104,16 @@ public class RestaurantService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestaurantWithAddressDto.builder().message(errorMessage).build());
         }
     }
-
+    @Cacheable("restaurantsCache")
     public ResponseEntity<List<Restaurant>> getRestaurants() {
         try {
             List<Restaurant> restaurants = restaurantRepository.findAll();
+            CompletableFuture<Void> completableFuture = CompletableFuture.allOf(
+                    restaurants.stream().map(restaurant -> CompletableFuture.runAsync(() -> {
+                        restaurant.getMenus().size(); // Загрузка связанных меню
+                    })).toArray(CompletableFuture[]::new)
+            );
+            completableFuture.get(); // Ждем завершения всех CompletableFuture
             return ResponseEntity.ok(restaurants);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
