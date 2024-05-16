@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateDishDto {
-    private Integer dishId;
+    private Long dishId;
     private String name;
     private String description;
     private double price;

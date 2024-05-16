@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MenuWithDishesDto {
-    private Integer id;
+    private Long id;
     private String name;
     private Integer restaurantId;
     private List<DishDto> dishes;

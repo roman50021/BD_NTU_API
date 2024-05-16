@@ -122,15 +122,13 @@ public class RestaurantService {
 
     @Transactional
     public ResponseEntity<MessageInfo> updateRestaurant(UpdateRestaurantDto request) {
-        // Находим ресторан по старому имени
         Optional<Restaurant> restaurantOptional = restaurantRepository.findByName(request.getName());
         if (restaurantOptional.isPresent()) {
             Restaurant restaurant = restaurantOptional.get();
 
-            // Проверяем, существует ли ресторан с новым именем
             Optional<Restaurant> existingRestaurant = restaurantRepository.findByName(request.getNewName());
             if (existingRestaurant.isPresent() && !existingRestaurant.get().getId().equals(restaurant.getId())) {
-                // Если ресторан с новым именем уже существует и это не текущий ресторан, возвращаем сообщение об ошибке
+
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(MessageInfo.builder().message("A restaurant with this new name already exists").build());
             } else {
                 // Обновляем информацию о ресторане
@@ -141,10 +139,8 @@ public class RestaurantService {
                 restaurant.setCloseTime(request.getCloseTime());
                 restaurant.setWebsite(request.getWebsite());
 
-                // Удаляем все существующие адреса ресторана
                 restaurantAddressRepository.deleteByRestaurant(restaurant);
 
-                // Добавляем новые адреса
                 List<RestaurantAddressDto> addressDtos = request.getAddresses();
                 for (RestaurantAddressDto addressDto : addressDtos) {
                     RestaurantAddress address = new RestaurantAddress();
@@ -155,7 +151,6 @@ public class RestaurantService {
                     restaurant.getAddresses().add(address);
                 }
 
-                // Сохраняем обновленный ресторан
                 restaurantRepository.save(restaurant);
 
                 return ResponseEntity.ok(new MessageInfo("Restaurant updated successfully"));
